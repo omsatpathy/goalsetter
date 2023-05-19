@@ -23,12 +23,14 @@ const setGoal= asyncHandler(async (req, res) => {
     }
 
     // create a goal and get the text value from body of the user's request.And post it to DB
-    const goal= Goal.create({
+    const goal= await Goal.create({
         text: req.body.text,
 
         //assigns a specific user to a goal 
         user: req.user.id
     })
+
+    console.log(goal)
 
     res.status(200).json(goal)
 })
@@ -45,16 +47,17 @@ const updateGoal= asyncHandler(async (req, res) => {
         throw new Error('Goal not found')
     }
 
-    const user= await User.findById(req.user.id)
+    //we dont do this as we have already did this in authMiddlware.js
+    // const user= await User.findById(req.user.id)
     
     //check for user
-    if(!user) {
+    if(!req.user) {
         res.status(401)
         throw new Error('User not found')
     }
 
     //make sure the logged in user matches the goal user
-    if(goal.user.toString() !== user.id) {
+    if(goal.user.toString() !== req.user.id) {
         res.status(401)
         throw new Error('Unauthorised user')
     }
@@ -76,16 +79,17 @@ const deleteGoal= asyncHandler(async (req, res) => {
         throw new Error('Goal not found')
     }
 
-    const user= await User.findById(req.user.id)
+    //again as we have already fetched user by id in req.user (and excluded the pswrd), in authMiddleware.js . SO we don't do this
+    // const user= await User.findById(req.user.id)
     
     //check for user
-    if(!user) {
+    if(!req.user) {
         res.status(401)
         throw new Error('User not found')
     }
 
     //make sure the logged in use matches the goal user
-    if(goal.user.toString() !== user.id) {
+    if(goal.user.toString() !== req.user.id) {
         res.status(401)
         throw new Error('Unauthorised user')
     }

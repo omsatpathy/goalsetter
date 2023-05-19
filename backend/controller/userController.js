@@ -74,13 +74,18 @@ const loginUser= asyncHandler(async (req, res) => {
 // @route POST api/users/me
 // @access Private
 const getMe= asyncHandler(async (req, res) => {
-    const { _id, name, email }= await User.findById(req.user.id)
+
+    //we don't need to do this here because we already found user by 'id' and excluded the password field in our 'authMiddleware.js'
+    // const { _id, name, email }= await User.findById(req.user.id)
     
-    res.status(200).json({
-        id: _id,
-        name,
-        email
-    })
+    // res.status(200).json({
+    //     id: _id,
+    //     name,
+    //     email
+    // })
+
+    //Instead we just send req.user directly
+    res.status(200).json(req.user)
 })
 
 // Generate JWT Token
